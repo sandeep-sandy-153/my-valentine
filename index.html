@@ -230,7 +230,63 @@ const prev=document.getElementById("prev");
 const next=document.getElementById("next");
 const music=document.getElementById("bgMusic");
 
-/* NO FULL SCREEN MOVE */
+/* ================= HEARTBEAT SYSTEM ================= */
+
+let audioCtx;
+let heartbeatInterval;
+let heartbeatSpeed = 1000;
+let heartbeatStarted = false;
+
+function startHeartbeat(){
+  if(heartbeatStarted) return;
+
+  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  heartbeatStarted = true;
+  runHeartbeat();
+}
+
+function runHeartbeat(){
+  clearInterval(heartbeatInterval);
+  heartbeatInterval = setInterval(()=>{
+    playBeat();
+    setTimeout(playBeat,180);
+  }, heartbeatSpeed);
+}
+
+function playBeat(){
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+
+  osc.type="sine";
+  osc.frequency.setValueAtTime(80, audioCtx.currentTime);
+  gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+
+  osc.start();
+  osc.stop(audioCtx.currentTime+0.15);
+}
+
+function increaseHeartbeat(){
+  if(heartbeatSpeed > 400){
+    heartbeatSpeed -= 80;
+    runHeartbeat();
+  }
+}
+
+function stopHeartbeat(){
+  clearInterval(heartbeatInterval);
+}
+
+/* Start heartbeat after first user interaction */
+document.addEventListener("click", function initHB(){
+  startHeartbeat();
+  document.removeEventListener("click", initHB);
+});
+
+/* ================= NO FULL SCREEN MOVE ================= */
+
 function moveNo(){
 const maxX=window.innerWidth-noBtn.offsetWidth;
 const maxY=window.innerHeight-noBtn.offsetHeight;
@@ -238,7 +294,6 @@ noBtn.style.position="fixed";
 noBtn.style.left=Math.random()*maxX+"px";
 noBtn.style.top=Math.random()*maxY+"px";
 
-/* YES CENTER + SCALE */
 if(!centered){
 centered=true;
 yesBtn.style.position="absolute";
@@ -249,6 +304,8 @@ yesBtn.style.transform="translate(-50%,-50%) scale(1)";
 
 yesScale+=0.05;
 yesBtn.style.transform="translate(-50%,-50%) scale("+yesScale+")";
+
+increaseHeartbeat();  // 🔥 speed up heartbeat
 }
 
 noBtn.onmouseover=moveNo;
@@ -256,10 +313,13 @@ noBtn.onclick=moveNo;
 noBtn.ontouchstart=(e)=>{e.preventDefault();moveNo();};
 
 yesBtn.onclick=()=>{
+stopHeartbeat();  // 💓 stop tension
+
 document.querySelector(".buttons").style.display="none";
 question.style.display="none";
 yesMessage.style.display="block";
 hint.style.display="block";
+
 music.volume=0.4;
 music.play();
 preloadImages();
