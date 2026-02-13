@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For Chinni 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+margin: 0;
+min-height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+font-family: 'Segoe UI', sans-serif;
+overflow: hidden;
+background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+transition: background 0.8s ease;
+}
+
+.container {
+background: white;
+padding: 35px 25px;
+border-radius: 20px;
+width: 92%;
+max-width: 380px;
+text-align: center;
+box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+z-index: 2;
+}
+
+h2 {
+color: #e91e63;
+margin-bottom: 30px;
+line-height: 1.4;
+}
+
+.buttons {
+position: relative;
+height: 120px;
+display: flex;
+justify-content: space-between;
+padding: 0 25px;
+}
+
+button {
+width: 120px;
+height: 55px;
+border-radius: 28px;
+border: none;
+font-size: 16px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+#yesBtn { background:#e91e63; color:white; }
+#noBtn {
+background:#aaa; color:white;
+position:absolute; left:220px; top:0;
+}
+
+/* YES MESSAGE */
+#yesMessage {
+display:none;
+font-size:18px;
+font-weight:bold;
+color:#e91e63;
+margin-top:20px;
+line-height:1.4;
+}
+
+/* CLICK HINT */
+.hint {
+display:none;
+margin-top:15px;
+font-size:18px;
+animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+0%,100% { transform:scale(1); }
+50% { transform:scale(1.1); }
+}
+
+/* ❤️ HEARTS */
+.heart {
+position:fixed;
+bottom:-20px;
+font-size:22px;
+animation:floatUp linear forwards;
+pointer-events:none;
+}
+
+@keyframes floatUp {
+0% { transform:translateY(0); opacity:1; }
+100% { transform:translateY(-120vh); opacity:0; }
+}
+
+/* SLIDER */
+.slider {
+display:none;
+margin-top:20px;
+}
+
+.slider img {
+width:100%;
+border-radius:15px;
+opacity:0;
+transition:opacity 0.4s ease;
+}
+
+.slider img.show {
+opacity:1;
+}
+
+.caption {
+margin-top:12px;
+font-size:16px;
+color:#444;
+font-weight:600;
+}
+
+/* NAV */
+.nav {
+display:flex;
+justify-content:space-between;
+margin-top:15px;
+}
+
+.nav button {
+padding:8px 14px;
+background:rgba(233,30,99,0.15);
+color:#e91e63;
+border-radius:20px;
+font-size:14px;
+}
+
+.nav button.hidden {
+visibility:hidden;
+}
+
+/* FINAL MESSAGE */
+.final {
+display:none;
+margin-top:25px;
+font-size:18px;
+font-weight:bold;
+color:#0b3c49;
+line-height:1.5;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="bgMusic" loop>
+<source src="https://sandeep-sandy-153.github.io/valentine/valentine-music.mp3" type="audio/mpeg">
+</audio>
+
+<div class="container">
+
+<h2 id="question">
+Chinni 💖<br>
+Will you be my Valentine?
+</h2>
+
+<div class="buttons">
+<button id="yesBtn">Yes 💖</button>
+<button id="noBtn">No 🙅‍♂️</button>
+</div>
+
+<div id="yesMessage">
+Yayyyy!!! 💕<br>
+Chaaalu Finally Yes Click Chesaaav ❤️
+</div>
+
+<div class="hint">👉 Click 👈</div>
+
+<div class="slider">
+<img id="slideImg">
+<div class="caption" id="slideText"></div>
+
+<div class="final" id="finalMsg">
+Chinni <br>
+Mana ee prayanam lo chala daggara ayyam inka daggara ga avvali ani naku chala anipisthundi
+Adi Twaralone jaruguthundi ani niku mata isthunna. Chala sarlu Godava paddam But nenu ayithe 
+naku nitho padina kanna godava nuvve important anipisthadi chinni.
+Manam eppudu ilane enni sarlu godava padina manchiga kalisi undali chinni<br>
+Wanted to be your valentine for the rest of my life💙
+</div>
+
+<div class="nav">
+<button id="prev">⬅️</button>
+<button id="next">➡️</button>
+</div>
+</div>
+
+</div>
+
+<script>
+const pastelBg = [
+"#fde2e4","#e4f1fe","#e8f8f5","#fef6e4",
+"#f3e8ff","#e0f2f1","#fff1f2","#f0f9ff",
+"#fef3c7","#ede9fe","#fce7f3","#ecfeff"
+];
+
+const slides = [
+  {img:"photo1.jpg", text:"chinni eroju mana iddaram kalisi first time morning bayataki vellam aaroju inka naku gurthundi, it's very special 💗"},
+  {img:"photo2.jpg", text:"mana night rides almost hyd antha cover chesam anukuntunna, we enjoyed alot kada in those drives ofcourse some are fights also 😅"},
+  {img:"photo3.jpg", text:"The Temples we visited, manam eppudu ilane chakkaga prathi daiva karyaniki prasanthaga velli ravali ani asisthunna 🙏"},
+  {img:"photo4.jpg", text:"Movies it holds a very special place in my life, adi nitho antey inka chala ekkuva happy ga velli chusevadini 🍿"},
+  {img:"photo5.jpg", text:"Shopping it means alot to you kada, aaa amb mall ayithe oka 50 times ayina visit chesi untam ofcourse andulo harleys kosam chala sarlu anuko 😁"},
+  {img:"photo6.jpg", text:"Office moments kalisi premaga vunnadi konni sarlu godava padindi ekkuva sarlu But those are memorable 😆"},
+  {img:"photo7.jpg", text:"Mana personal moments when we are together it's very special, Ofcourse aroju manam first time ... 🤫"},
+  {img:"photo8.jpg", text:"Bike rides with you willl be always memorable and special 🏍️"},
+  {img:"photo9.jpg", text:"Car rides are always memorable, Gurthunda night mana chethilo car unte em chesevallamo aarojullo 🤭"},
+  {img:"photo10.jpg", text:"Beach ki ninnu chupinchina rojulu enno andulo konni madhura gnapakalu 🌊"},
+  {img:"photo11.jpg", text:"Charminar lo chori 😅 But niku edina konipettatam chala thakkuva But konipettina moments are very special for me"},
+  {img:"photo12.jpg", text:"My Bujji Kutti chinni nuvu entha Boddhu ga untavo thelusa 😘 alane undu, Danikosam Nuvvu thintu undu nenu peduthu unta 🍲"}
+];
+
+/* 🔹 PRELOAD IMAGES (KEY FIX) */
+const preloadedImages = [];
+function preloadImages() {
+slides.forEach(slide => {
+const img = new Image();
+img.src = slide.img;
+preloadedImages.push(img);
+});
+}
+
+let index = 0;
+let atFinal = false;
+
+const body = document.body;
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const question = document.getElementById("question");
+const yesMessage = document.getElementById("yesMessage");
+const hint = document.querySelector(".hint");
+const slider = document.querySelector(".slider");
+const finalMsg = document.getElementById("finalMsg");
+const img = document.getElementById("slideImg");
+const txt = document.getElementById("slideText");
+const prev = document.getElementById("prev");
+const next = document.getElementById("next");
+const music = document.getElementById("bgMusic");
+
+noBtn.onmouseover = () => {
+noBtn.style.left = Math.random()*200+"px";
+noBtn.style.top = Math.random()*80+"px";
+};
+
+yesBtn.onclick = () => {
+document.querySelector(".buttons").style.display="none";
+question.style.display="none";
+yesMessage.style.display="block";
+hint.style.display="block";
+
+music.volume=0.4;
+music.play();
+
+preloadImages();   // ✅ PRELOAD HERE
+startHearts();
+};
+
+hint.onclick = () => {
+hint.style.display="none";
+yesMessage.style.display="none";
+slider.style.display="block";
+showSlide();
+};
+
+function showSlide() {
+atFinal = false;
+img.classList.remove("show");
+finalMsg.style.display="none";
+img.style.display="block";
+txt.style.display="block";
+
+setTimeout(() => {
+img.src = slides[index].img;
+txt.innerText = slides[index].text;
+body.style.background = pastelBg[index];
+
+img.onload = () => img.classList.add("show");
+}, 40);
+
+prev.classList.toggle("hidden", index===0);
+next.classList.remove("hidden");
+}
+
+next.onclick = () => {
+if(index < slides.length-1){
+index++;
+showSlide();
+} else {
+atFinal = true;
+img.style.display="none";
+txt.style.display="none";
+finalMsg.style.display="block";
+body.style.background="#4aa3b8";
+
+prev.classList.remove("hidden");
+next.classList.add("hidden");
+}
+};
+
+prev.onclick = () => {
+if(atFinal){
+atFinal=false;
+index=slides.length-1;
+showSlide();
+return;
+}
+if(index>0){
+index--;
+showSlide();
+}
+};
+
+function startHearts(){
+setInterval(()=>{
+const h=document.createElement("div");
+h.className="heart";
+h.innerHTML="❤️";
+h.style.left=Math.random()*100+"vw";
+h.style.animationDuration=(Math.random()*2+3)+"s";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),5000);
+},300);
+}
+</script>
+
+</body>
+</html>
