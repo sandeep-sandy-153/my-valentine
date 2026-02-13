@@ -140,6 +140,10 @@ line-height:1.5;
 
 <body>
 
+<audio id="heartbeatAudio" loop>
+<source src="heartbeat.mp3" type="audio/mpeg">
+</audio>
+
 <audio id="bgMusic" loop>
 <source src="https://sandeep-sandy-153.github.io/valentine/valentine-music.mp3" type="audio/mpeg">
 </audio>
@@ -230,71 +234,34 @@ const prev=document.getElementById("prev");
 const next=document.getElementById("next");
 const music=document.getElementById("bgMusic");
 
-/* ================= HEARTBEAT SYSTEM ================= */
-
-let audioCtx;
-let heartbeatInterval;
-let heartbeatSpeed = 1000;
+const heartbeatAudio = document.getElementById("heartbeatAudio");
 let heartbeatStarted = false;
 
 function startHeartbeat(){
   if(heartbeatStarted) return;
 
-  audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-  if(audioCtx.state === "suspended"){
-    audioCtx.resume();
-  }
-
   heartbeatStarted = true;
-  runHeartbeat();
-}
-
-function runHeartbeat(){
-  clearInterval(heartbeatInterval);
-
-  heartbeatInterval = setInterval(()=>{
-    playBeat();
-    setTimeout(playBeat,180);
-  }, heartbeatSpeed);
-}
-
-function playBeat(){
-
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-
-  // Lower frequency for deeper thump
-  osc.type = "sine";
-  osc.frequency.setValueAtTime(55, audioCtx.currentTime);
-
-  // Stronger volume
-  gain.gain.setValueAtTime(0.6, audioCtx.currentTime);
-
-  // Quick attack-decay for punchy heartbeat
-  gain.gain.exponentialRampToValueAtTime(
-    0.001,
-    audioCtx.currentTime + 0.25
-  );
-
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.25);
+  heartbeatAudio.volume = 0.4;  // starting volume
+  heartbeatAudio.play();
 }
 
 function increaseHeartbeat(){
-  if(heartbeatSpeed > 350){
-    heartbeatSpeed -= 70;
-    runHeartbeat();
+  if(heartbeatAudio.playbackRate < 1.8){
+    heartbeatAudio.playbackRate += 0.1;  // speed up
+  }
+
+  if(heartbeatAudio.volume < 0.8){
+    heartbeatAudio.volume += 0.05;  // increase volume
   }
 }
 
 function stopHeartbeat(){
-  clearInterval(heartbeatInterval);
+  heartbeatAudio.pause();
+  heartbeatAudio.currentTime = 0;
+  heartbeatAudio.playbackRate = 1;
+  heartbeatAudio.volume = 0.4;
+  heartbeatStarted = false;
 }
-
 /* ================= NO FULL SCREEN MOVE ================= */
 
 function moveNo(){
