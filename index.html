@@ -241,12 +241,18 @@ function startHeartbeat(){
   if(heartbeatStarted) return;
 
   audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  if(audioCtx.state === "suspended"){
+    audioCtx.resume();
+  }
+
   heartbeatStarted = true;
   runHeartbeat();
 }
 
 function runHeartbeat(){
   clearInterval(heartbeatInterval);
+
   heartbeatInterval = setInterval(()=>{
     playBeat();
     setTimeout(playBeat,180);
@@ -258,14 +264,15 @@ function playBeat(){
   const gain = audioCtx.createGain();
 
   osc.type="sine";
-  osc.frequency.setValueAtTime(80, audioCtx.currentTime);
-  gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+  osc.frequency.setValueAtTime(75, audioCtx.currentTime);
+
+  gain.gain.setValueAtTime(0.15, audioCtx.currentTime); // louder
 
   osc.connect(gain);
   gain.connect(audioCtx.destination);
 
   osc.start();
-  osc.stop(audioCtx.currentTime+0.15);
+  osc.stop(audioCtx.currentTime+0.18);
 }
 
 function increaseHeartbeat(){
@@ -279,15 +286,10 @@ function stopHeartbeat(){
   clearInterval(heartbeatInterval);
 }
 
-/* Start heartbeat after first user interaction */
-document.addEventListener("click", function initHB(){
-  startHeartbeat();
-  document.removeEventListener("click", initHB);
-});
-
 /* ================= NO FULL SCREEN MOVE ================= */
 
 function moveNo(){
+startHeartbeat();
 const maxX=window.innerWidth-noBtn.offsetWidth;
 const maxY=window.innerHeight-noBtn.offsetHeight;
 noBtn.style.position="fixed";
