@@ -260,24 +260,33 @@ function runHeartbeat(){
 }
 
 function playBeat(){
+
   const osc = audioCtx.createOscillator();
   const gain = audioCtx.createGain();
 
-  osc.type="sine";
-  osc.frequency.setValueAtTime(75, audioCtx.currentTime);
+  // Lower frequency for deeper thump
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(55, audioCtx.currentTime);
 
-  gain.gain.setValueAtTime(0.15, audioCtx.currentTime); // louder
+  // Stronger volume
+  gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+
+  // Quick attack-decay for punchy heartbeat
+  gain.gain.exponentialRampToValueAtTime(
+    0.001,
+    audioCtx.currentTime + 0.25
+  );
 
   osc.connect(gain);
   gain.connect(audioCtx.destination);
 
   osc.start();
-  osc.stop(audioCtx.currentTime+0.18);
+  osc.stop(audioCtx.currentTime + 0.25);
 }
 
 function increaseHeartbeat(){
-  if(heartbeatSpeed > 400){
-    heartbeatSpeed -= 80;
+  if(heartbeatSpeed > 350){
+    heartbeatSpeed -= 70;
     runHeartbeat();
   }
 }
